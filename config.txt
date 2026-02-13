@@ -1,7 +1,7 @@
 # Key Description Example
 
 # Seed
-SEED=2141421412
+SEED=4242
 
 # WIDTH Maze width (number of cells)
 WIDTH=20
