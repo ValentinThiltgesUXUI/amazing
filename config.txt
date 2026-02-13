@@ -7,7 +7,7 @@ SEED=4242
 WIDTH=20
 
 # HEIGHT Maze height
-HEIGHT=15
+HEIGHT=20
 
 # ENTRY Entry coordinates (x,y)
 ENTRY=0,0

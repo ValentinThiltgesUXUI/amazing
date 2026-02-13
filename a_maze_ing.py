@@ -1,6 +1,6 @@
 import config_utils
-from printer import Printer, CellType
 import random_generator
+from printer import CellType, Printer
 
 file = "config.txt"
 
@@ -9,18 +9,18 @@ def main() -> None:
     parsing = config_utils.Parser(file)
     printer = Printer()
     parsing.init_list()
-    width = parsing.get_value("WIDTH")
-    height = parsing.get_value("HEIGHT")
+    width = int(parsing.get_value("WIDTH"))
+    height = int(parsing.get_value("HEIGHT"))
     seed = parsing.get_value("SEED")
+
     print("=== CONFIG FILE ===")
     print(f"Width: {width}\nHeight: {height}\nSeed: {seed}\n")
+
     tab1 = random_generator.generate_random_s(seed, 100)
-    grid = []
-    cell_tab = []
-    while tab1:
-        while tab1:
-            cell_tab.append((CellType.WALL, Printer.RED))
-        grid.append(cell_tab)
+
+    # Créer la grille avec ratio automatique
+    grid = printer.create_square_grid(width, height)
+
     printer.display_grid(grid)
     print("\n")
 
