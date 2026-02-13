@@ -13,7 +13,7 @@ class Parser:
         return False
 
     @staticmethod
-    def separate(string):
+    def separate(string) -> tuple(list(str)):
         # Separate key from content
         # Return a organised tuple
         index = 0
@@ -26,7 +26,7 @@ class Parser:
         contents.append(string[index+1:])
         return (keys, contents)
 
-    def get_list_from_file(self):
+    def get_list_from_file(self) -> list(str):
         # Get the raw list (key=content)
         fd = open(self.file, 'r')
         line = fd.readline()
@@ -38,7 +38,7 @@ class Parser:
         fd.close()
         return lines
 
-    def init_list(self):
+    def init_list(self) -> None:
         # Set the list of tuple as self.separated
         # 0 : key
         # 1 : content
@@ -46,12 +46,11 @@ class Parser:
         separated = []
         for i in lst:
             separated.append(self.separate(i))
-        print(separated)
         self.separated = separated
 
-    def get_value(self, key):
+    def get_value(self, key) -> str:
         # Search the key in list and return the value
         lst = self.separated
         for i in lst:
             if i[0][0] == key:
-                print(i[1][0])
+                return i[1][0]
