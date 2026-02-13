@@ -1,9 +1,11 @@
+# import typing
+
 class Parser:
-    def __init__(self, file="config.txt"):
+    def __init__(self, file: str = "config.txt") -> None:
         self.file = file
 
     @staticmethod
-    def verify_first(str) -> bool:
+    def verify_first(str: str) -> bool:
         # First caracter is not a commentary / newline
         # -> return True
         # else -> return False
@@ -13,7 +15,7 @@ class Parser:
         return False
 
     @staticmethod
-    def separate(string) -> tuple(list(str)):
+    def separate(string: str) -> tuple[list[str], list[str]]:
         # Separate key from content
         # Return a organised tuple
         index = 0
@@ -26,7 +28,7 @@ class Parser:
         contents.append(string[index+1:])
         return (keys, contents)
 
-    def get_list_from_file(self) -> list(str):
+    def get_list_from_file(self) -> list[str]:
         # Get the raw list (key=content)
         fd = open(self.file, 'r')
         line = fd.readline()
@@ -48,9 +50,10 @@ class Parser:
             separated.append(self.separate(i))
         self.separated = separated
 
-    def get_value(self, key) -> str:
+    def get_value(self, key: str) -> str:
         # Search the key in list and return the value
         lst = self.separated
         for i in lst:
             if i[0][0] == key:
                 return i[1][0]
+        return ""

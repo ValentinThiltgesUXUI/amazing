@@ -4,7 +4,7 @@ import random_generator
 file = "config.txt"
 
 
-def main():
+def main() -> None:
     parsing = config_utils.Parser(file)
     parsing.init_list()
     width = parsing.get_value("WIDTH")
