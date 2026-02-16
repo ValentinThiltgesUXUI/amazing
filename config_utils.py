@@ -1,5 +1,6 @@
 # import typing
 
+
 class Parser:
     def __init__(self, file: str = "config.txt") -> None:
         self.file = file
@@ -9,7 +10,7 @@ class Parser:
         # First caracter is not a commentary / newline
         # -> return True
         # else -> return False
-        caracters_list = ['#', '\n']
+        caracters_list = ["#", "\n"]
         if str[0] not in caracters_list:
             return True
         return False
@@ -25,12 +26,18 @@ class Parser:
         keys = []
         keys.append(string[:index])
         contents = []
-        contents.append(string[index+1:])
+        contents.append(string[index + 1 :])
         return (keys, contents)
+
+    @staticmethod
+    def extract_coord(string: str):
+        temp = string.split(",")
+        result: tuple[int, int] = int(temp[0])+1, int(temp[1])+1
+        return result
 
     def get_list_from_file(self) -> list[str]:
         # Get the raw list (key=content)
-        fd = open(self.file, 'r')
+        fd = open(self.file, "r")
         line = fd.readline()
         lines = []
         while line:

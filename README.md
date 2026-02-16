@@ -7,3 +7,6 @@ Build a maze generator
 # Intructions
 
 # Resources
+
+Generating Mazes with Algorithms Using Python - Part 1 [https://youtu.be/i5mmGBdLOnM]
+Lambda functions in Python [https://www.w3schools.com/python/python_lambda.asp]

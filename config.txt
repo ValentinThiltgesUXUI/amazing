@@ -4,10 +4,10 @@
 SEED=4242
 
 # WIDTH Maze width (number of cells)
-WIDTH=20
+WIDTH=50
 
 # HEIGHT Maze height
-HEIGHT=20
+HEIGHT=50
 
 # ENTRY Entry coordinates (x,y)
 ENTRY=0,0
