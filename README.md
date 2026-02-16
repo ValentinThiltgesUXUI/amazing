@@ -9,4 +9,5 @@ Build a maze generator
 # Resources
 
 Generating Mazes with Algorithms Using Python - Part 1 [https://youtu.be/i5mmGBdLOnM]
-Lambda functions in Python [https://www.w3schools.com/python/python_lambda.asp]
+Yield keyword in Python [https://youtu.be/HnggP09mKpM]
+Lambda functions in Python [https://www.youtube.com/watch?v=KR22jigJLok]

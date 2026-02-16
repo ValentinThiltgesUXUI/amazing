@@ -10,7 +10,7 @@ class CellType(Enum):
 
     WALL = "█"
     POINT = "█"
-    SPACE = " "
+    SPACE = "█"
 
 
 class Printer:

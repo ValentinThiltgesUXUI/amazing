@@ -30,10 +30,10 @@ class Parser:
         return (keys, contents)
 
     @staticmethod
-    def extract_coord(string: str):
+    def extract_coord(string: str) -> tuple[int, int]:
+        """Parse une coordonnée 'x,y' depuis le fichier config."""
         temp = string.split(",")
-        result: tuple[int, int] = int(temp[0])+1, int(temp[1])+1
-        return result
+        return int(temp[0]), int(temp[1])
 
     def get_list_from_file(self) -> list[str]:
         # Get the raw list (key=content)

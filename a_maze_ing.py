@@ -1,9 +1,17 @@
 import algorithm
 import config_utils
-import random_generator
 from printer import CellType, Printer
 
 file = "config.txt"
+
+# La grille logique a une bordure de 1 cellule de large.
+# Les coords config (0,0 = première case jouable) doivent être décalées.
+BORDER = 1
+
+
+def to_grid_coord(coord: tuple[int, int]) -> tuple[int, int]:
+    """Convertit des coordonnées config en coordonnées grille logique."""
+    return coord[0] + BORDER, coord[1] + BORDER
 
 
 def main() -> None:
@@ -12,10 +20,9 @@ def main() -> None:
     parsing.init_list()
     width = int(parsing.get_value("WIDTH"))
     height = int(parsing.get_value("HEIGHT"))
-    seed = parsing.get_value("SEED")
-    entry = parsing.extract_coord(parsing.get_value("ENTRY"))
-    exit_ = parsing.extract_coord(parsing.get_value("EXIT"))
-    generating = True
+    seed = int(parsing.get_value("SEED"))
+    entry = to_grid_coord(parsing.extract_coord(parsing.get_value("ENTRY")))
+    exit_ = to_grid_coord(parsing.extract_coord(parsing.get_value("EXIT")))
 
     # Créer la grille logique (coords simples, sans ratio)
     grid = printer.create_logical_grid(width, height)
@@ -25,13 +32,10 @@ def main() -> None:
     printer.set_cell(grid, exit_[0], exit_[1], CellType.POINT, Printer.GREEN)
 
     # Générer le labyrinthe
-    grid = algorithm.generate_maze(
-        grid, width, height, seed, entry=entry, exit_=exit_
-    )
+    for grid in algorithm.generate_maze(grid, seed, entry, exit_):
+        printer.display_grid(grid, delay=0.10)
 
-    while generating:
-        printer.display_grid(grid)
-    print("\n=== END ===\n")
+    printer.display_grid(grid)
 
 
 if __name__ == "__main__":
