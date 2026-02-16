@@ -44,6 +44,7 @@ def main() -> None:
     # Marquer la sortie après génération
     printer.set_cell(grid, exit_[0], exit_[1], CellType.POINT, Printer.GREEN)
     printer.display_grid(grid)
+    print("")
 
 
 if __name__ == "__main__":

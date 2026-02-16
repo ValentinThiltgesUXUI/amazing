@@ -4,6 +4,7 @@ Fournit l'algorithme de création du labyrinthe à partir d'une grille logique.
 """
 
 from printer import CellType, Printer
+from collections import deque
 
 
 def get_neighbour(pos: tuple[int, int], direction: str) -> tuple[int, int]:
@@ -80,6 +81,79 @@ def get_free_neighbours(
                 free.append(n_pos)
     return free
 
+def get_reachable_neighbours(grid, pos):
+    """
+    Retourne la liste des voisins accessibles pour une cellule donnée.
+    Un voisin est accessible si le mur qui le sépare de la cellule courante est ouvert.
+
+    Args:
+        grid: Grille logique du labyrinthe.
+        pos:  Position de la cellule (x, y).
+
+    Returns:
+        Liste de tuples ((nx, ny), direction) pour chaque voisin accessible.
+        - (nx, ny): coordonnées du voisin.
+        - direction: 'north', 'south', 'east' ou 'west'.
+    """
+    grid_h = len(grid)
+    grid_w = len(grid[0])
+    directions = {
+        "north": (0, -2),
+        "south": (0, 2),
+        "east":  (2, 0),
+        "west":  (-2, 0),
+    }
+    reachable = []
+
+    x, y = pos
+
+    for direction, (dx, dy) in directions.items():
+        nx, ny = x + dx, y + dy
+
+        # Vérifie que les coordonnées sont dans la grille
+        if not (0 <= nx < grid_w and 0 <= ny < grid_h):
+            continue
+
+        # Calculer la position du mur entre la cellule et le voisin
+        wx, wy = get_wall_between((x, y), (nx, ny))
+        ct = case_type(grid[wy][wx])
+
+        # Si le mur n'est pas un mur (donc ouvert), le voisin est accessible
+        if ct != "WALL":
+            reachable.append(((nx, ny), direction))
+
+    return reachable
+
+def find_shortest_path(grid, entry, exit_):
+    """
+    BFS : trouve le plus court chemin de entry à exit_.
+    Retourne une string de directions (ex: "SSSEENNWS").
+    """
+    queue = deque()
+    queue.append(entry)
+    # Pour chaque cellule visitée, on stocke d'où on vient et par quelle direction
+    came_from = {entry: None}
+
+    while queue:
+        pos = queue.popleft()
+
+        if pos == exit_:
+            # Reconstruire le chemin
+            path = []
+            current = exit_
+            while came_from[current] is not None:
+                prev_pos, direction = came_from[current]
+                path.append(direction[0].upper())  # "north" → "N"
+                current = prev_pos
+            path.reverse()
+            return "".join(path)
+
+        for neighbour, direction in get_reachable_neighbours(grid, pos):
+            if neighbour not in came_from:
+                came_from[neighbour] = (pos, direction)
+                queue.append(neighbour)
+
+    return ""  # Pas de chemin trouvé
 
 def generate_maze(
     grid: list[list[tuple | None]],
