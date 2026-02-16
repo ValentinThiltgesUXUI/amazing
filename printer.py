@@ -39,25 +39,30 @@ class Printer:
     @staticmethod
     def create_logical_grid(width: int, height: int) -> list[list[tuple | None]]:
         """
-        Crée une grille logique (1 cellule = 1 case du labyrinthe).
-        Les bordures sont des murs, l'intérieur est None (indéterminé).
+        Crée une grille logique avec alternance murs / cellules jouables.
+        Pour un labyrinthe de width × height cellules jouables,
+        la grille fait (2*width + 1) × (2*height + 1).
+
+        Les positions impaires (1,1), (1,3), (3,1)... sont les cellules
+        jouables (None = non visitées). Tout le reste est mur.
 
         Args:
-            width:  Largeur en nombre de cellules
-            height: Hauteur en nombre de cellules
+            width:  Nombre de cellules jouables en largeur
+            height: Nombre de cellules jouables en hauteur
 
         Returns:
-            Grille logique [height][width] de (CellType, color) | None
+            Grille logique [(2h+1)][(2w+1)] de (CellType, color) | None
         """
+        grid_w = 2 * width + 1
+        grid_h = 2 * height + 1
         grid: list[list[tuple | None]] = []
-        for y in range(height):
+        for y in range(grid_h):
             row: list[tuple | None] = []
-            for x in range(width):
-                is_border = y == 0 or y == height - 1 or x == 0 or x == width - 1
-                if is_border:
-                    row.append((CellType.WALL, Printer.LIGHT_GRAY))
-                else:
+            for x in range(grid_w):
+                if x % 2 == 1 and y % 2 == 1:
                     row.append(None)
+                else:
+                    row.append((CellType.WALL, Printer.LIGHT_GRAY))
             grid.append(row)
         return grid
 
@@ -109,19 +114,19 @@ class Printer:
     def display_grid(logical: list[list[tuple | None]], delay: float = 0.15) -> None:
         """
         Convertit la grille logique en graphique puis l'affiche au terminal.
-
-        Args:
-            logical: Grille logique
-            delay:   Pause après affichage (secondes)
+        Construit le frame entier en un seul string pour réduire le flickering.
         """
         graphical = Printer.to_graphical_grid(logical)
-        Printer.clear_screen()
+        lines = []
         for row in graphical:
+            line = ""
             for cell in row:
                 if cell is None:
-                    Printer.paint(CellType.SPACE, Printer.LIGHT_GRAY)
+                    line += f"{Printer.LIGHT_GRAY}{CellType.SPACE.value}{Printer.RESET}"
                 else:
-                    cell_type, color = cell
-                    Printer.paint(cell_type, color)
-            print()
+                    ct, color = cell
+                    line += f"{color}{ct.value}{Printer.RESET}"
+            lines.append(line)
+        frame = "\n".join(lines)
+        print(f"\033[H{frame}\033[J", end="", flush=True)
         time.sleep(delay)

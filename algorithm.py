@@ -5,39 +5,50 @@ Fournit l'algorithme de création du labyrinthe à partir d'une grille logique.
 
 from printer import CellType, Printer
 
+
 def get_neighbour(pos: tuple[int, int], direction: str) -> tuple[int, int]:
     """
-    Donne la coordonnée voisine (x, y) depuis la position 'pos' selon la direction donnée.
+    Donne la cellule jouable voisine depuis 'pos' selon la direction.
+    Saute de 2 cases (car les cellules jouables sont aux positions impaires).
 
     Args:
         pos:        Coordonnées (x, y) du point de départ
         direction:  "north", "south", "east", "west"
 
     Returns:
-        Coordonnées (x, y) du voisin dans la direction choisie
+        Coordonnées (x, y) du voisin jouable
     """
     x, y = pos
     if direction == "north":
-        return (x, y - 1)
+        return (x, y - 2)
     elif direction == "south":
-        return (x, y + 1)
+        return (x, y + 2)
     elif direction == "east":
-        return (x + 1, y)
+        return (x + 2, y)
     elif direction == "west":
-        return (x - 1, y)
+        return (x - 2, y)
     else:
         raise ValueError(f"Direction inconnue: {direction}")
 
+
+def get_wall_between(
+    pos: tuple[int, int], neighbour: tuple[int, int]
+) -> tuple[int, int]:
+    """
+    Retourne la position du mur entre deux cellules jouables adjacentes.
+    """
+    return (pos[0] + neighbour[0]) // 2, (pos[1] + neighbour[1]) // 2
+
+
 def case_type(cell: tuple | None) -> str:
     """
-    Retourne le type de la cellule sous forme de chaine et un code numérique.
+    Retourne le type de la cellule.
+
     Args:
         cell: tuple (CellType, couleur) ou None
 
     Returns:
-        tuple : (type_str, code)
-            type_str in ("WALL", "POINT", "SPACE", "UNDEFINED")
-            code: 0 (WALL), 1 (POINT), 2 (SPACE), 3 (UNDEFINED)
+        "SPACE_UNVISITED", "WALL", "POINT", ou "SPACE_VISITED"
     """
     if cell is None:
         return "SPACE_UNVISITED"
@@ -50,18 +61,29 @@ def case_type(cell: tuple | None) -> str:
     else:
         raise ValueError(f"Type de case inconnue: {cell[0]}")
 
-def get_free_neighbours(grid, pos) -> list[tuple[str, str]]:
+
+def get_free_neighbours(
+    grid: list[list[tuple | None]], pos: tuple[int, int]
+) -> list[tuple[int, int]]:
+    """
+    Retourne la liste des cellules jouables voisines non visitées.
+    Vérifie les bornes de la grille avant d'accéder.
+    """
+    grid_h = len(grid)
+    grid_w = len(grid[0])
     free = []
     for direction in ["north", "south", "east", "west"]:
         n_pos = get_neighbour(pos, direction)
-        n_ct = grid[n_pos[1]][n_pos[0]]
-        if case_type(n_ct) == "SPACE_UNVISITED":
-            free.append(n_pos)
+        nx, ny = n_pos
+        if 0 <= ny < grid_h and 0 <= nx < grid_w:
+            if case_type(grid[ny][nx]) == "SPACE_UNVISITED":
+                free.append(n_pos)
     return free
+
 
 def generate_maze(
     grid: list[list[tuple | None]],
-    seed: str,
+    seed: int,
     entry: tuple[int, int],
     exit_: tuple[int, int],
 ) -> list[list[tuple | None]]:
@@ -80,13 +102,14 @@ def generate_maze(
         neighbours = get_free_neighbours(grid, pos)
 
         if neighbours:
-            # Choisir un voisin libre au hasard
             next_pos = random.choice(neighbours)
-            # Creuser le passage
+            # Ouvrir le mur entre la position actuelle et le voisin
+            wall = get_wall_between(pos, next_pos)
+            Printer.set_cell(grid, wall[0], wall[1], CellType.SPACE, Printer.BLACK)
+            # Marquer le voisin comme visité
             Printer.set_cell(grid, next_pos[0], next_pos[1], CellType.SPACE, Printer.BLACK)
             stack.append(next_pos)
             yield grid
         else:
-            # Impasse → backtrack
             stack.pop()
             yield grid

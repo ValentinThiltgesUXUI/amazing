@@ -1,13 +1,13 @@
 # Key Description Example
 
 # Seed
-SEED=4242
+SEED=1212
 
 # WIDTH Maze width (number of cells)
-WIDTH=50
+WIDTH=20
 
 # HEIGHT Maze height
-HEIGHT=50
+HEIGHT=20
 
 # ENTRY Entry coordinates (x,y)
 ENTRY=0,0
@@ -20,3 +20,6 @@ OUTPUT_FILE=maze.txt
 
 # PERFECT Is the maze perfect?
 PERFECT=True
+
+# DISPLAY_MODE=animation
+DISPLAY_MODE=direct
