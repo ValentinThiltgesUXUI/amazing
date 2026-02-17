@@ -22,8 +22,7 @@ def check_bounds(grid: list[list], point: tuple[int, int]) -> bool:
     width = len(grid[0]) if height > 0 else 0
 
     if x < 0 or x >= width or y < 0 or y >= height:
-        msg = f"Coordonnée ({x}, {y}) est hors des limites "
-        msg += f"({width}x{height})"
+        msg = f"({x}, {y})"
         raise OutOfBound(msg)
 
     return True

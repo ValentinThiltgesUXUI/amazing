@@ -1,6 +1,8 @@
 import algorithm
 import config_utils
 from printer import CellType, Printer
+from c_error import OutOfBound, check_bounds
+
 
 file = "config.txt"
 
@@ -26,6 +28,14 @@ def main() -> None:
 
     # Créer la grille logique (coords simples, sans ratio)
     grid = printer.create_logical_grid(width, height)
+
+    # D'abord vérifier que l'entrée et la sortie dans la grille
+    try:
+        check_bounds(grid, entry)
+        check_bounds(grid, exit_)
+    except OutOfBound as coords:
+        print(f"Coordinates {coords} out of bound, choose something else")
+        return
 
     # Marquer l'entrée (avant génération, le DFS part de là)
     printer.set_cell(grid, entry[0], entry[1], CellType.POINT, Printer.RED)
