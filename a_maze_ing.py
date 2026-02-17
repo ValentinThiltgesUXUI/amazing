@@ -30,16 +30,17 @@ def main() -> None:
     # Marquer l'entrée (avant génération, le DFS part de là)
     printer.set_cell(grid, entry[0], entry[1], CellType.POINT, Printer.RED)
 
-    # Générer le labyrinthe (exit_ reste None pour que le DFS puisse l'atteindre)
+    # Générer le labyrinthe (exit_ reste None pour que le DFS puisse
     display_mode = parsing.get_value("DISPLAY_MODE") or "animation"
 
     Printer.clear_screen()
     if display_mode == "animation":
-        for grid in algorithm.generate_maze(grid, seed, entry, exit_):
-            printer.display_grid(grid, delay=0.05)
+        for updated_grid in algorithm.generate_maze(grid, seed, entry, exit_):
+            printer.display_grid(updated_grid, delay=0.05)
+            grid = updated_grid
     else:
-        for grid in algorithm.generate_maze(grid, seed, entry, exit_):
-            pass
+        for updated_grid in algorithm.generate_maze(grid, seed, entry, exit_):
+            grid = updated_grid
 
     # Marquer la sortie après génération
     printer.set_cell(grid, exit_[0], exit_[1], CellType.POINT, Printer.GREEN)

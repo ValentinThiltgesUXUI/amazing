@@ -5,6 +5,7 @@ Fournit l'algorithme de création du labyrinthe à partir d'une grille logique.
 
 from printer import CellType, Printer
 from collections import deque
+from typing import Generator
 
 
 def get_neighbour(pos: tuple[int, int], direction: str) -> tuple[int, int]:
@@ -81,10 +82,12 @@ def get_free_neighbours(
                 free.append(n_pos)
     return free
 
+
 def get_reachable_neighbours(grid, pos):
     """
     Retourne la liste des voisins accessibles pour une cellule donnée.
-    Un voisin est accessible si le mur qui le sépare de la cellule courante est ouvert.
+    Un voisin est accessible si le mur qui le sépare de la cellule courante
+    est ouvert.
 
     Args:
         grid: Grille logique du labyrinthe.
@@ -124,6 +127,7 @@ def get_reachable_neighbours(grid, pos):
 
     return reachable
 
+
 def find_shortest_path(grid, entry, exit_):
     """
     BFS : trouve le plus court chemin de entry à exit_.
@@ -131,7 +135,7 @@ def find_shortest_path(grid, entry, exit_):
     """
     queue = deque()
     queue.append(entry)
-    # Pour chaque cellule visitée, on stocke d'où on vient et par quelle direction
+    # Pour chaque cellule visitée, on stocke d'où on vient et la direction
     came_from = {entry: None}
 
     while queue:
@@ -155,12 +159,13 @@ def find_shortest_path(grid, entry, exit_):
 
     return ""  # Pas de chemin trouvé
 
+
 def generate_maze(
     grid: list[list[tuple | None]],
     seed: int,
     entry: tuple[int, int],
     exit_: tuple[int, int],
-) -> list[list[tuple | None]]:
+) -> Generator[list[list[tuple | None]], None, None]:
     """
     Génère le labyrinthe avec un DFS (recursive backtracker).
     Utilise yield pour animer chaque étape.
@@ -179,9 +184,13 @@ def generate_maze(
             next_pos = random.choice(neighbours)
             # Ouvrir le mur entre la position actuelle et le voisin
             wall = get_wall_between(pos, next_pos)
-            Printer.set_cell(grid, wall[0], wall[1], CellType.SPACE, Printer.BLACK)
+            Printer.set_cell(
+                grid, wall[0], wall[1], CellType.SPACE, Printer.BLACK
+            )
             # Marquer le voisin comme visité
-            Printer.set_cell(grid, next_pos[0], next_pos[1], CellType.SPACE, Printer.BLACK)
+            Printer.set_cell(
+                grid, next_pos[0], next_pos[1], CellType.SPACE, Printer.BLACK
+            )
             stack.append(next_pos)
             yield grid
         else:
