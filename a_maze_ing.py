@@ -2,6 +2,7 @@ import algorithm
 import config_utils
 from printer import CellType, Printer
 from c_error import OutOfBound, check_bounds
+from output import write_to_hex
 
 
 file = "config.txt"
@@ -55,6 +56,9 @@ def main() -> None:
     # Marquer la sortie après génération
     printer.set_cell(grid, exit_[0], exit_[1], CellType.POINT, Printer.GREEN)
     printer.display_grid(grid)
+
+    write_to_hex(grid, entry, exit_, bfs)
+
     print("")
 
 

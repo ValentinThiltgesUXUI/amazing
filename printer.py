@@ -37,7 +37,9 @@ class Printer:
     # ── Grille logique ──────────────────────────────────────────────
 
     @staticmethod
-    def create_logical_grid(width: int, height: int) -> list[list[tuple | None]]:
+    def create_logical_grid(
+        width: int, height: int
+    ) -> list[list[tuple | None]]:
         """
         Crée une grille logique avec alternance murs / cellules jouables.
         Pour un labyrinthe de width × height cellules jouables,
